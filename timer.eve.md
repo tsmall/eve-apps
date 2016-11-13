@@ -35,17 +35,32 @@ bind @browser
 ```
 
 ### Running timer UI
-When the timer is running, the UI shows the elapsed time and goal time. For simplicity it is shown in seconds, but that will be changed to minutes before we ship.
+When the timer is running, the UI shows the elapsed time and goal time.
+
+The `elapsed` and `goal` times are in seconds, but the UI should show them as minutes and seconds in the standard `M:SS` format. To convert them, a #`time` record is written for each time. They're tagged so they can be easily identified below.
 
 ```
 search
   [#timer running: true, elapsed, goal]
 
+bind
+  [#time-val #elapsed seconds: elapsed]
+  [#time-val #goal seconds: goal]
+```
+
+With that, Eve worked its magic and we now have the formatted strings, which we'll use to show the timer's current value to the user.
+
+```
+search
+  [#timer running: true]
+  [#time-val #elapsed formatted: elapsed]
+  [#time-val #goal formatted: goal]
+
 bind @browser
   [#div children:
     [#span text: "{{elapsed}} / {{goal}}"]]
   [#div children:
-[#button #stop-button text: "Stop timer"]]
+    [#button #stop-button text: "Stop timer"]]
 ```
 
 ## UI behavior
@@ -113,4 +128,21 @@ timer = [#timer running: true, elapsed, goal]
 
 commit
   timer <- [running: false, completed: true]
+```
+
+## Time conversion
+Part of this program needs to convert time from a number of seconds to the standard, human-friendly representation of `M:SS`. This calculation needs to be performed multiple times. In Eve, the unit of composition is a pattern-matched record, not a function. (In fact, you can't even define your own functions yet.) That means this solution will be a bit different.
+
+To perform this calculation, the code will write #`time-val` records, which must have a `seconds` field. All #`time-val` records are automatically extended to have a `formatted` field, which contains the seconds converted into `M:SS` format.
+
+```
+search
+  time = [#time-val seconds]
+  mins = floor[value: seconds / 60]
+  secs = mod[value: seconds, by: 60]
+  secs-padded = if secs > 9 then secs else "0{{secs}}"
+  formatted = "{{mins}}:{{secs-padded}}"
+
+commit
+  time.formatted := formatted
 ```
