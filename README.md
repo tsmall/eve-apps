@@ -15,5 +15,12 @@ The idea is very exciting and interesting. Eve is a superset of [Markdown][md].
 All Eve programs written are valid Markdown. So you can read my programs,
 completely marked up, right here in GitHub.
 
+Or, at least, you should be able to. Unfortunately GitHub doesn't yet recognize
+that `.eve` files are valid Markdown and renders them as raw text. So I've added a `.md` suffix to all of my files.
+
+## My programs
+
+* [Timer](lp/timer.md) ([raw](src/timer.eve))
+
 [eve]: http://witheve.com/
 [md]: https://daringfireball.net/projects/markdown/
