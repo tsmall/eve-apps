@@ -20,7 +20,9 @@ that `.eve` files are valid Markdown and renders them as raw text. So I've added
 
 ## My programs
 
-* [Timer](lp/timer.md) ([raw](src/timer.eve))
+Here are the programs I've written so far, in the order I've written them.
+
+* [Timer](timer.eve.md)
 
 [eve]: http://witheve.com/
 [md]: https://daringfireball.net/projects/markdown/
